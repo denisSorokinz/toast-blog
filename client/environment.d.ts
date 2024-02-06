@@ -1,5 +1,5 @@
 namespace NodeJS {
   interface ProcessEnv {
-    GRAPHQL_API_URL: string;
+    NEXT_PUBLIC_GRAPHQL_API_URL: string;
   }
 }

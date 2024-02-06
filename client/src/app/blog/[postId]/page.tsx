@@ -4,7 +4,7 @@ import { WithNextRouteParams } from "@/types";
 export default function SinglePost({
   params: { postId },
 }: WithNextRouteParams<{ postId: number }>) {
-  isAuthenticated();
+  const shouldShow = isAuthenticated();
 
   return <h3>postId: {postId}</h3>;
 }

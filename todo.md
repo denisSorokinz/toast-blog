@@ -57,8 +57,9 @@ plan:
              + implement auth store
              + implement modal state
              + implement modal view: form UI
-             > implement form submission onSuccess (auth update + redirect)
+             + implement form submission onSuccess (auth update + redirect)
         single post page
+            implement cookie-based auth (/api/ route handlers + graphql { mutation login } on server + cookies.set())
     admin
         unauthorized view + login modal
         authorized view ->
