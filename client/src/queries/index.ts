@@ -3,7 +3,18 @@ import { gql } from "@apollo/client";
 // Posts
 export const QUERY_GET_ALL_POSTS = gql`
   query {
-    getPosts {
+    getAllPosts {
+      id
+      title
+      content
+      created_at
+    }
+  }
+`;
+
+export const QUERY_GET_POST_BY_ID = gql`
+  query getPostById($id: ID!) {
+    getPostById(id: $id) {
       id
       title
       content

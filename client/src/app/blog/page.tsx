@@ -3,23 +3,14 @@ import { getClient } from "@/lib/apollo/rsc";
 import PostList from "./PostList";
 import { IPost } from "@/types";
 import Heading from "@/components/ui/Heading";
-
-const query = gql`
-  query getPosts {
-    getPosts {
-      id
-      title
-      content
-    }
-  }
-`;
+import { QUERY_GET_ALL_POSTS } from "@/queries";
 
 export default async function Blog() {
   // fetch all posts w/ Apollo Client
   const { error, loading, data } = await getClient().query<{
     getPosts: IPost[];
   }>({
-    query,
+    query: QUERY_GET_ALL_POSTS,
   });
 
   // handle loading, error

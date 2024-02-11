@@ -7,13 +7,20 @@ import { FC, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { MUTATION_LOGIN, MUTATION_SIGN_UP } from "@/queries";
 import useAuthStore from "@/stores/auth";
+import {
+  AUTH_OPERATIONS,
+  AuthResponse,
+  LoginResponse,
+  SignUpResponse,
+} from "@/types";
+import { authAction } from "@/lib/actions";
 
 const validationSchema = z
   .object({
     login: z.string().min(1, { message: "Login is required" }),
     password: z
       .string()
-      .min(6, { message: "Password must be at least 6 characters" }),
+      .min(4, { message: "Password must be at least 4 characters" }),
     confirmPassword: z
       .string()
       .min(1, { message: "Confirm Password is required" }),
@@ -22,12 +29,7 @@ const validationSchema = z
     path: ["confirmPassword"],
     message: "Password don't match",
   });
-type ValidationSchema = z.infer<typeof validationSchema>;
-
-enum MODES {
-  LOGIN,
-  SIGN_UP,
-}
+type FormData = z.infer<typeof validationSchema>;
 
 type Props = {
   onAuthSuccess?: () => void;
@@ -35,73 +37,50 @@ type Props = {
   Footer?: FC;
 };
 
-type BaseResponse = {
-  success: boolean;
-  error?: string;
-};
-type LoginResponse = {
-  login: BaseResponse & {
-    accessToken: string;
-  };
-};
-type SignUpResponse = {
-  signUp: BaseResponse;
-};
-type AuthResponse = LoginResponse | SignUpResponse;
-
 const AuthForm: FC<Props> = ({ onAuthSuccess, Heading, Footer }) => {
-  const [mode, setMode] = useState<MODES>(MODES.LOGIN);
+  const [mode, setMode] = useState<AUTH_OPERATIONS>(AUTH_OPERATIONS.LOGIN);
   const toggleMode = () =>
-    setMode(mode === MODES.LOGIN ? MODES.SIGN_UP : MODES.LOGIN);
+    setMode(
+      mode === AUTH_OPERATIONS.LOGIN
+        ? AUTH_OPERATIONS.SIGN_UP
+        : AUTH_OPERATIONS.LOGIN,
+    );
 
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
-
-  const [mutationLogin, loginData] = useMutation<LoginResponse>(MUTATION_LOGIN);
-  const [mutationSignUp, signUpData] =
-    useMutation<SignUpResponse>(MUTATION_SIGN_UP);
-
-  const onSubmit: SubmitHandler<ValidationSchema> = ({
-    login,
-    password,
-    ...rest
-  }) => {
-    const fetcher = mode === MODES.LOGIN ? mutationLogin : mutationSignUp;
-
-    const onCompleted = (response: AuthResponse) => {
-      if (mode === MODES.LOGIN) {
-        const tRes = response as LoginResponse;
-
-        if (tRes.login.success) setAccessToken(tRes.login.accessToken);
-
-        onAuthSuccess && onAuthSuccess();
-      }
-      if (mode === MODES.SIGN_UP) {
-        setMode(MODES.LOGIN);
-        form.reset();
-      }
-    };
-
-    fetcher({
-      variables: {
-        login,
-        password,
-      },
-      onCompleted,
-    });
-  };
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     ...form
-  } = useForm<ValidationSchema>({
+  } = useForm<FormData>({
     resolver: zodResolver(validationSchema),
   });
 
+  const [message, setMessage] = useState("");
+
+  const onValid = async ({ login, password }: FormData) => {
+    const operation = mode;
+    const res = await authAction({ operation, login, password });
+
+    if (operation === AUTH_OPERATIONS.LOGIN) {
+      const token = (res as LoginResponse).login.accessToken;
+      setAccessToken(token);
+
+      form.reset();
+      onAuthSuccess && onAuthSuccess();
+    }
+
+    if (
+      operation === AUTH_OPERATIONS.SIGN_UP &&
+      (res as SignUpResponse).signUp.success
+    )
+      setMessage("Sign up successfully");
+  };
+
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onValid)}>
         <div className="flex flex-col gap-2 p-4 md:gap-4">
           {Heading && <Heading />}
           <div className="flex flex-col gap-1">
@@ -174,7 +153,7 @@ const AuthForm: FC<Props> = ({ onAuthSuccess, Heading, Footer }) => {
           </div>
           <hr />
           <span className="text-purple-500">
-            {mode === MODES.LOGIN && (
+            {mode === AUTH_OPERATIONS.LOGIN && (
               <>
                 Don&apos;t have an account?{" "}
                 <button
@@ -185,7 +164,7 @@ const AuthForm: FC<Props> = ({ onAuthSuccess, Heading, Footer }) => {
                 </button>
               </>
             )}
-            {mode === MODES.SIGN_UP && (
+            {mode === AUTH_OPERATIONS.SIGN_UP && (
               <>
                 Already have an account?{" "}
                 <button
@@ -197,11 +176,8 @@ const AuthForm: FC<Props> = ({ onAuthSuccess, Heading, Footer }) => {
               </>
             )}
           </span>
-          {mode === MODES.LOGIN && loginData.data?.login.success && (
-            <span className="text-green-300">Logged in successfully</span>
-          )}
-          {mode === MODES.SIGN_UP && signUpData.data?.signUp.success && (
-            <span className="text-green-300">Signed up successfully</span>
+          {mode === AUTH_OPERATIONS.SIGN_UP && message && (
+            <span className="text-green-300">{message}</span>
           )}
         </div>
         {Footer && <Footer />}

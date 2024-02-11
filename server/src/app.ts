@@ -31,8 +31,8 @@ const app = () => {
       }
 
       type Query {
-        getPosts: [Post]
-        getPostById(id: [ID]!): Post
+        getAllPosts: [Post]
+        getPostById(id: ID!): Post
       }
       type Mutation {
         signUp(login: String, password: String): SignUpResponse
@@ -66,8 +66,8 @@ const app = () => {
         created_at: (parent) => parent.created_at,
       },
       Query: {
-        getPosts: async (parent, args, { dataSources }) => {
-          const posts = await dataSources.postsAPI.getPosts();
+        getAllPosts: async (parent, args, { dataSources }) => {
+          const posts = await dataSources.postsAPI.getAllPosts();
           return posts;
         },
         getPostById: async (parent, { id }, { dataSources }) => {
@@ -111,37 +111,3 @@ const app = () => {
 };
 
 app();
-
-// // express HTTP server
-// const PORT = 4000;
-
-// const app = express();
-// app.use(cors());
-
-// app.get('/api/posts', async (req: Request, res: Response) => {
-//   const posts = await db('posts').select('*');
-
-//   if (!posts.length) {
-//     res.status(404).json({ error: 'No posts found' });
-//     return;
-//   }
-
-//   res.status(200).json({ posts });
-// });
-
-// app.get('/api/posts/:id', async (req: Request, res: Response) => {
-//   const { id } = req.params;
-
-//   console.log({ id });
-
-//   const post = await db('posts').where({ id }).select('*').first();
-
-//   if (!post) {
-//     res.status(404).json({ error: 'Post not found' });
-//     return;
-//   }
-
-//   res.status(200).json({ post });
-// });
-
-// app.listen(PORT, () => console.log(`listening on port: ${PORT}`));

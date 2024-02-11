@@ -11,7 +11,7 @@ type Props = {
 
 const Profile: FC<Props> = ({ className }) => {
   const showModal = useModalStore((state) => state.show);
-  const { isAuthenticated, logout } = useAuthStore();
+  const { isAuthenticated, logout, accessToken } = useAuthStore();
 
   const button = (
     <button onClick={isAuthenticated ? logout : showModal}>
