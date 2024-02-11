@@ -20,7 +20,7 @@ class PostsDataSource {
     return ids.map((id) => mapIdToPost[id]);
   });
 
-  async getPosts() {
+  async getAllPosts() {
     const posts = await this._PS.getAllPosts();
     posts.forEach((post) => this.batchPosts.prime(post.id, post));
 

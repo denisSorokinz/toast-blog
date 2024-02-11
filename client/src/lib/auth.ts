@@ -1,7 +1,25 @@
-import { headers } from "next/headers";
+import { cookies } from "next/headers";
+import { verify, decode } from "jsonwebtoken";
+import { PERMISSIONS } from "@/types";
 
-const isAuthenticated = () => {
-  console.log({ headers: headers() });
+export const isAuthenticated = () => {
+  const token = cookies().get("accessToken")?.value;
+
+  if (!token) return false;
+
+  const isTokenValid = verify(token, process.env.TOKEN_SECRET);
+  return !!isTokenValid;
 };
 
-export { isAuthenticated };
+export const isAuthorizedFor = (permission: PERMISSIONS) => {
+  if (!isAuthenticated()) return;
+
+  const token = cookies().get("accessToken")?.value!;
+
+  const { permissions } = decode(token) as {
+    userId: number;
+    permissions: PERMISSIONS[];
+  };
+
+  return permissions.includes(permission);
+};
