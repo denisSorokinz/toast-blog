@@ -1,8 +1,12 @@
+import env from 'dotenv';
+
+env.config();
+
 export default {
   development: {
     client: 'postgresql',
     connection: {
-      connectionString: 'postgres://qwerty@localhost/db_blog',
+      connectionString: process.env.DATABASE_URL,
     },
     pool: {
       min: 2,
