@@ -3,9 +3,13 @@
 import FlipBox from "@/components/ui/FlipBox";
 import { IPost } from "@/types";
 import { FC, useEffect, useRef, useState } from "react";
-import EditPost, { PostFormData } from "./EditPost";
+import EditPost, { PostFormData, postValidationSchema } from "./EditPost";
+import ObservableMap from "@/lib/observableMap";
 
-export type PostFormRefList = Map<keyof PostFormData, HTMLElement | null>;
+export type PostFormRefList = ObservableMap<
+  keyof PostFormData,
+  HTMLElement | null
+>;
 
 type Props = {
   items: IPost[];
@@ -15,14 +19,25 @@ const PostList: FC<Props> = ({ items: posts }) => {
   const onEditIdChange = (nextId: number) =>
     setEditingId(nextId !== editingId ? nextId : null);
 
-  const noFlipRefs = useRef<PostFormRefList>(new Map());
+  const noFlipRefs = useRef<PostFormRefList>(
+    new ObservableMap((entries) => {
+      const postInputs = postValidationSchema.shape;
+      if (entries.length === 1) {
+        entries.forEach(([_, ref]) => {
+          ref?.addEventListener("click", (ev) => {
+            ev.stopPropagation();
+          });
+        });
+      }
+    }),
+  );
 
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
 
     // todo: observable or accumulator pattern until refList.current.length === 3
-    setInterval(() => console.log({ noFlipRefs }), 1000);
+    // setInterval(() => console.log({ noFlipRefs }), 1000);
 
     return () => setIsMounted(false);
   }, []);

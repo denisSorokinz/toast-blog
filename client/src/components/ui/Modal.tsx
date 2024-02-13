@@ -56,7 +56,7 @@ const Modal = () => {
                     <div className="bg-gray-50 p-4 sm:flex sm:flex-row-reverse">
                       <button
                         type="submit"
-                        className="inline-flex w-full items-center justify-center rounded-md bg-purple-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-purple-600 sm:ml-3 sm:w-auto"
+                        className="inline-flex w-full items-center justify-center rounded-md bg-purple-500 px-3 py-2 text-sm font-semibold text-slate-100 shadow-sm hover:bg-purple-600 sm:ml-3 sm:w-auto"
                       >
                         Submit
                       </button>

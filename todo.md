@@ -80,7 +80,9 @@ plan:
                         server action & debounce
                         steps:
                             + create EditPost component
-                            > create zod validation schema for posts (title 5+ chars, content 20+ chars, created at optional, default to Date.now())
+                            + create zod validation schema for posts (title 5+ chars, content 20+ chars, created at optional, default to Date.now())
+                            > implement shadcn calendar
+                            prevent card flip on input click
                             create form, display input fields for title & content
                             display date picker for createdAt
                             onFieldChange() && zodValid -> editPostServerAction(formData)
@@ -94,6 +96,8 @@ plan:
             ~ integrate UsersView to /dashboard/view
             ~ integrate UsersView to /dashboard
 
+---
+task: use ShadCn components for a11y - Card, Form, etc.
 ---
 task: create authentication
 

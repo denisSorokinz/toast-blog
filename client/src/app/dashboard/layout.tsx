@@ -4,7 +4,7 @@ import Sidebar from "@/components/ui/dashboard/sidebar";
 import { SidebarNavItem } from "@/components/ui/dashboard/sidebar/Nav";
 import { isAuthenticated, isAuthorizedFor } from "@/lib/auth";
 import { PERMISSIONS } from "@/types";
-import { noParamsLens } from "@/utils/lenses";
+import { noParamsLens } from "@/lib/lenses";
 
 const sidebarNavItems: SidebarNavItem[] = [
   { href: "/dashboard", title: "Main" },

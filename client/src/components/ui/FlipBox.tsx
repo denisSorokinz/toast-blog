@@ -1,5 +1,4 @@
-import cn from "@/utils/cn";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import { FC, PropsWithChildren } from "react";
 
 type Props = {

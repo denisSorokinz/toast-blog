@@ -5,6 +5,7 @@ import ApolloWrapper from "@/components/ApolloWrapper";
 
 import "./globals.css";
 import Profile from "@/components/ui/Profile";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,13 +17,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-purple-700"
+      className="scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-purple-700 dark"
     >
-      <body className={inter.className}>
+      <body className={cn(inter.className)}>
         <ApolloWrapper>
-          <header className="fixed top-0 grid grid-cols-3 w-full rounded-b bg-opacity-50 bg-gradient-to-br from-blue-500 to-purple-500 py-2 px-4">
+          <header className="fixed top-0 grid w-full grid-cols-3 rounded-b bg-opacity-50 bg-gradient-to-br from-blue-500 to-purple-500 px-4 py-2">
             <div></div>
-            <nav className="prose flex gap-2 justify-center">
+            <nav className="prose flex justify-center gap-2">
               <Link href="/" className="text-slate-100 no-underline">
                 Home
               </Link>
@@ -35,7 +36,9 @@ export default function RootLayout({
             </nav>
             <Profile className="ml-auto" />
           </header>
-          <main className="h-screen bg-slate-300 px-4 pt-16 pb-8">{children}</main>
+          <main className="h-screen bg-background px-4 pb-8 pt-16">
+            {children}
+          </main>
           <Modal />
         </ApolloWrapper>
       </body>

@@ -8,7 +8,7 @@ import { QUERY_GET_ALL_POSTS } from "@/queries";
 export default async function Blog() {
   // fetch all posts w/ Apollo Client
   const { error, loading, data } = await getClient().query<{
-    getPosts: IPost[];
+    getAllPosts: IPost[];
   }>({
     query: QUERY_GET_ALL_POSTS,
   });
@@ -21,7 +21,7 @@ export default async function Blog() {
   // render all posts
   return (
     <>
-      <PostList posts={data.getPosts} />
+      <PostList posts={data.getAllPosts} />
     </>
   );
 }

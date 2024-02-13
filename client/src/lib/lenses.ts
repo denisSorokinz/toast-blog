@@ -1,5 +1,3 @@
-// todo: use lens pattern
-
 type AbstractObject = { [key: string]: any };
 
 class Lens {
