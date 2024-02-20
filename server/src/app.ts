@@ -1,10 +1,12 @@
-import { ApolloServer } from '@apollo/server';
 import gql from 'graphql-tag';
+import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { GraphQLScalarType, Kind } from 'graphql';
 import PostsDataSource from './datasources/posts';
+import IPost from './types/post';
 import env from 'dotenv';
 import AuthService from './services/auth';
+import PostsService from './services/posts';
 
 env.config();
 
@@ -18,7 +20,7 @@ const app = () => {
         id: Int!
         title: String!
         content: String
-        created_at: Date
+        createdAt: Date
       }
       type SignUpResponse {
         success: Boolean!
@@ -26,8 +28,19 @@ const app = () => {
       }
       type LoginResponse {
         success: Boolean!
-        error: String
         accessToken: String
+        error: String
+      }
+      type EditPostResponse {
+        success: Boolean!
+        data: Post
+        error: String
+      }
+
+      input PostInput {
+        title: String!
+        content: String
+        createdAt: Date
       }
 
       type Query {
@@ -35,8 +48,9 @@ const app = () => {
         getPostById(id: ID!): Post
       }
       type Mutation {
-        signUp(login: String, password: String): SignUpResponse
-        login(login: String, password: String): LoginResponse
+        signUp(login: String!, password: String!): SignUpResponse
+        login(login: String!, password: String!): LoginResponse
+        editPostById(id: ID!, post: PostInput!): EditPostResponse
       }
     `,
     resolvers: {
@@ -63,7 +77,7 @@ const app = () => {
         },
       }),
       Post: {
-        created_at: (parent) => parent.created_at,
+        createdAt: (parent) => parent.created_at,
       },
       Query: {
         getAllPosts: async (parent, args, { dataSources }) => {
@@ -94,6 +108,19 @@ const app = () => {
           }
 
           return data;
+        },
+        editPostById: async (_, { id, post }: { id: IPost['id']; post: Partial<IPost> }) => {
+          let updated;
+
+          try {
+            updated = await PostsService.getInstance().editPostById(id, post);
+          } catch (error) {
+            console.log(`error editing post ${id}:`, error);
+
+            return { success: false, error };
+          }
+
+          return { success: true, data: updated };
         },
       },
     },

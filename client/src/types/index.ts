@@ -7,7 +7,7 @@ export type WithNextRouteParams<T> = {
 export interface IPost {
   id: number;
   title: string;
-  created_at: string;
+  createdAt: number;
   content?: string;
 };
 
@@ -31,5 +31,6 @@ export enum AUTH_OPERATIONS {
 }
 export enum PERMISSIONS {
   READ_POSTS = "read:posts",
+  WRITE_POSTS = "write:posts",
   GOTO_DASHBOARD = "goto:dashboard",
 }

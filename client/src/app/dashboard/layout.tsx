@@ -23,9 +23,9 @@ export default function DashboardLayout({
   params: {};
 }>) {
   const isAuthed = isAuthenticated();
-  const shouldShow = isAuthorizedFor(PERMISSIONS.GOTO_DASHBOARD);
 
-  if (!shouldShow) return <UnauthorizedView showModal={!isAuthed} />;
+  if (!isAuthorizedFor(PERMISSIONS.GOTO_DASHBOARD))
+    return <UnauthorizedView showModal={!isAuthed} />;
 
   const widgets = noParamsLens.view(rest);
 

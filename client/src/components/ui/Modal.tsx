@@ -17,7 +17,7 @@ const Modal = () => {
         className="relative z-10"
         initialFocus={cancelButtonRef}
         onClose={hide}
-      >
+      >.
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

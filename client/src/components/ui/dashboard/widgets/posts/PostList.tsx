@@ -5,6 +5,7 @@ import { IPost } from "@/types";
 import { FC, useEffect, useRef, useState } from "react";
 import EditPost, { PostFormData, postValidationSchema } from "./EditPost";
 import ObservableMap from "@/lib/observableMap";
+import { editPost } from "@/lib/actions";
 
 export type PostFormRefList = ObservableMap<
   keyof PostFormData,
@@ -19,25 +20,9 @@ const PostList: FC<Props> = ({ items: posts }) => {
   const onEditIdChange = (nextId: number) =>
     setEditingId(nextId !== editingId ? nextId : null);
 
-  const noFlipRefs = useRef<PostFormRefList>(
-    new ObservableMap((entries) => {
-      const postInputs = postValidationSchema.shape;
-      if (entries.length === 1) {
-        entries.forEach(([_, ref]) => {
-          ref?.addEventListener("click", (ev) => {
-            ev.stopPropagation();
-          });
-        });
-      }
-    }),
-  );
-
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
-
-    // todo: observable or accumulator pattern until refList.current.length === 3
-    // setInterval(() => console.log({ noFlipRefs }), 1000);
 
     return () => setIsMounted(false);
   }, []);
@@ -48,7 +33,7 @@ const PostList: FC<Props> = ({ items: posts }) => {
         <div
           key={post.id}
           className="flex min-h-40 w-full min-w-[40%] max-w-[50%] shrink grow basis-0 cursor-pointer flex-col"
-          onClick={(ev) => (console.log({ ev }), onEditIdChange(post.id))}
+          // onClick={() => (onEditIdChange(post.id))}
         >
           <FlipBox
             front={
@@ -56,12 +41,18 @@ const PostList: FC<Props> = ({ items: posts }) => {
                 <h3 className="m-0">{post.title}</h3>
                 <p>{post.content}</p>
                 <span className="mt-auto text-right text-slate-400">
-                  {isMounted && new Date(post.created_at).toLocaleDateString()}
+                  {isMounted && new Date(post.createdAt).toLocaleDateString()}
                 </span>
               </div>
             }
-            back={<EditPost ref={noFlipRefs} />}
+            back={
+              <EditPost
+                post={post}
+                onSubmit={editPost}
+              />
+            }
             isFlipped={editingId === post.id}
+            dispatchFlip={() => onEditIdChange(post.id)}
           />
         </div>
       ))}

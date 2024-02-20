@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-purple-700 dark"
+      className="scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-purple-700"
     >
       <body className={cn(inter.className)}>
         <ApolloWrapper>

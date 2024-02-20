@@ -6,7 +6,7 @@ class PostsDataSource {
   private _PS: PostsService;
 
   constructor() {
-    this._PS = new PostsService();
+    this._PS = PostsService.getInstance();
   }
 
   private batchPosts = new DataLoader<number, IPost>(async (ids) => {

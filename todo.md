@@ -6,8 +6,8 @@ user stories:
     view logged in -> display posts (if has permissions)
 ~ admin
     login
-    CRUD posts (title, content, created_at)
-    CRUD users (login, password, permissions, created_at)
+    CRUD posts (title, content, createdAt)
+    CRUD users (login, password, permissions, createdAt)
 
 testing potential:
 ~ back-end:
@@ -81,12 +81,21 @@ plan:
                         steps:
                             + create EditPost component
                             + create zod validation schema for posts (title 5+ chars, content 20+ chars, created at optional, default to Date.now())
-                            > implement shadcn calendar
-                            prevent card flip on input click
-                            create form, display input fields for title & content
-                            display date picker for createdAt
-                            onFieldChange() && zodValid -> editPostServerAction(formData)
-                            debounce each onFieldChange()
+                            + implement shadcn calendar
+                            + prevent card flip on input click
+                            + integrate shadcn form calendar field
+                            + integrate shadcn form input fields
+                            + onFieldChange() && zodValid -> editPostServerAction(formData)
+                            + debounce each onFieldChange()
+                            > implement dataSources.postService.editPostById(post.id, post)
+                                + introduce write:post permissions
+                                + protect server action w/ hasPermissionsFor
+                                + accept (id: ID!, post: Post!) in editPostById arguments
+                                    define input: https://stackoverflow.com/a/45806494
+                                > map createdAt to created_at using a custom directive
+                                if !post.exists throw
+                                perform update + where query
+                                return new post
                 extend tailwind for FlipBox css
                 display 'delete' button
                 display '+ create' button in the top right corner of the view

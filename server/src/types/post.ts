@@ -1,8 +1,8 @@
 interface IPost {
   id: number;
   title: string;
+  createdAt: number;
   content?: string;
-  created_at: string;
 }
 
 export default IPost;

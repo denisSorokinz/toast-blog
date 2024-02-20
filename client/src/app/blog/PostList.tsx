@@ -4,9 +4,6 @@ import Link from "next/link";
 import { FC } from "react";
 
 const PostList: FC<{ posts: IPost[] }> = ({ posts }) => {
-  console.log({ dbgPosts: posts });
-  
-
   if (posts.length === 0) return <Heading>No posts found</Heading>;
 
   return (
