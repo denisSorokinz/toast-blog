@@ -38,20 +38,20 @@ class PostsService {
     return post;
   }
 
-  async editPostById(id: number, post: Partial<IPost>) {
+  async editPostById(id: number, post: Pick<IPost, 'id'> & Partial<IPost>) {
     if (!this._db) throw new Error('No active DB connection available');
 
-    const postExists = !!(await this._db('posts').where({ id }).select('*').first());
-    console.log(id, post);
-    if (!postExists) throw new Error(`post with id ${id} does not exist`);
+    const old = await this._db('posts').where({ id }).select('*').first();
+    if (!old) throw new Error(`post with id ${id} does not exist`);
 
-    const updated = await this._db('posts')
+    const updated = { ...old, ...post };
+    delete updated['id'];
+
+    await this._db('posts')
       .where({ id })
-      .update({ ...post });
+      .update({ ...updated });
 
-    console.log({ updated });
-
-    return updated;
+    return { ...updated, id };
   }
 }
 

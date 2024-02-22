@@ -6,8 +6,8 @@ user stories:
     view logged in -> display posts (if has permissions)
 ~ admin
     login
-    CRUD posts (title, content, createdAt)
-    CRUD users (login, password, permissions, createdAt)
+    CRUD posts (title, content, created_at)
+    CRUD users (login, password, permissions, created_at)
 
 testing potential:
 ~ back-end:
@@ -73,9 +73,9 @@ plan:
             > develop PostsView
                 + list all posts as cards
                 > post 'edit'
-                    card onClick -> flip post card, display input fields for: title, content, createdAt
+                    card onClick -> flip post card, display input fields for: title, content, created_at
                         'edit' UX/UI?
-                        input for each field (date picker for createdAt) (pos absolute tooltip)
+                        input for each field (date picker for created_at) (pos absolute tooltip)
                         react-hook-form & zod
                         server action & debounce
                         steps:
@@ -92,13 +92,16 @@ plan:
                                 + protect server action w/ hasPermissionsFor
                                 + accept (id: ID!, post: Post!) in editPostById arguments
                                     define input: https://stackoverflow.com/a/45806494
-                                > map createdAt to created_at using a custom directive
-                                if !post.exists throw
-                                perform update + where query
-                                return new post
-                extend tailwind for FlipBox css
+                                + map createdAt to created_at
+                                + if !post.exists throw
+                                + perform update + where query
+                                + return new post
+                > sync state changes
+                    + use optimistic updates
+                    refactor
                 display 'delete' button
                 display '+ create' button in the top right corner of the view
+            ~ use codegen for graphql server&client
             ~ integrate PostsView to /dashboard/view
             ~ integrate PostsView to /dashboard
             ~ develop UsersView

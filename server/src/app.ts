@@ -16,11 +16,18 @@ const app = () => {
     typeDefs: gql`
       scalar Date
 
+      input PostInput {
+        id: Int!
+        title: String
+        content: String
+        created_at: Date
+      }
+
       type Post {
         id: Int!
         title: String!
         content: String
-        createdAt: Date
+        created_at: Date
       }
       type SignUpResponse {
         success: Boolean!
@@ -37,12 +44,6 @@ const app = () => {
         error: String
       }
 
-      input PostInput {
-        title: String!
-        content: String
-        createdAt: Date
-      }
-
       type Query {
         getAllPosts: [Post]
         getPostById(id: ID!): Post
@@ -50,7 +51,7 @@ const app = () => {
       type Mutation {
         signUp(login: String!, password: String!): SignUpResponse
         login(login: String!, password: String!): LoginResponse
-        editPostById(id: ID!, post: PostInput!): EditPostResponse
+        updatePost(post: PostInput!): EditPostResponse
       }
     `,
     resolvers: {
@@ -77,8 +78,9 @@ const app = () => {
         },
       }),
       Post: {
-        createdAt: (parent) => parent.created_at,
+        created_at: (parent) => parent.created_at,
       },
+
       Query: {
         getAllPosts: async (parent, args, { dataSources }) => {
           const posts = await dataSources.postsAPI.getAllPosts();
@@ -109,13 +111,13 @@ const app = () => {
 
           return data;
         },
-        editPostById: async (_, { id, post }: { id: IPost['id']; post: Partial<IPost> }) => {
+        updatePost: async (_, { post }: { post: Pick<IPost, 'id'> & Partial<IPost> }) => {
           let updated;
 
           try {
-            updated = await PostsService.getInstance().editPostById(id, post);
+            updated = await PostsService.getInstance().editPostById(post.id, post);
           } catch (error) {
-            console.log(`error editing post ${id}:`, error);
+            console.log(`error editing post ${post.id}:`, error);
 
             return { success: false, error };
           }

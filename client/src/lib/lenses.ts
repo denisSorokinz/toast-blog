@@ -8,7 +8,7 @@ class Lens {
     this.source = source;
     this.destination = destination;
   }
-  static from(source: string, destination?: string) {
+  static from(source: string, destination?: typeof source) {
     return new Lens(source, destination);
   }
   get(obj: AbstractObject) {
@@ -16,6 +16,26 @@ class Lens {
   }
   set(val: any, obj: AbstractObject) {
     return { ...obj, [this.destination]: val };
+  }
+}
+
+class OnlyPropertiesLens {
+  source;
+
+  constructor(source: string[]) {
+    this.source = source;
+  }
+  static from(source: string[]) {
+    return new OnlyPropertiesLens(source);
+  }
+  view(obj: AbstractObject) {
+    const res = { ...obj };
+
+    for (let key in res) {
+      if (!this.source.includes(key)) delete res[key];
+    }
+
+    return res;
   }
 }
 
@@ -31,3 +51,5 @@ class ExcludeLens extends Lens {
 }
 
 export const noParamsLens = ExcludeLens.from("params");
+
+export { OnlyPropertiesLens };

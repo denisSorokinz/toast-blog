@@ -29,7 +29,7 @@ export default async function SinglePost({
     <article className="prose">
       <h2 className="mb-2">{post.title}</h2>
       {post.content && <p className="text-xl text-slate-700">{post.content}</p>}
-      <span>created at: {new Date(post.createdAt).toLocaleDateString()}</span>
+      <span>created at: {new Date(post.created_at).toLocaleDateString()}</span>
     </article>
   );
 

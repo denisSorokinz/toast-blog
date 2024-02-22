@@ -7,14 +7,21 @@ export const QUERY_GET_ALL_POSTS = gql`
       id
       title
       content
-      createdAt
+      created_at
     }
   }
 `;
-export const MUTATION_EDIT_POST_BY_ID = gql`
-  mutation editPostById($id: ID!, $post: PostInput!) {
-    editPostById(id: $id, post: $post) {
+export const MUTATION_UPDATE_POST = gql`
+  mutation updatePost($post: PostInput!) {
+    updatePost(post: $post) {
       success
+      error
+      data {
+        id
+        title
+        content
+        created_at
+      }
     }
   }
 `;
@@ -25,7 +32,7 @@ export const QUERY_GET_POST_BY_ID = gql`
       id
       title
       content
-      createdAt
+      created_at
     }
   }
 `;

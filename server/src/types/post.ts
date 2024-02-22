@@ -1,7 +1,7 @@
 interface IPost {
   id: number;
   title: string;
-  createdAt: number;
+  created_at: number;
   content?: string;
 }
 
